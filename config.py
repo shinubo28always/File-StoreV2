@@ -33,7 +33,7 @@ DB_URI = os.environ.get("DATABASE_URL", "mongodb+srv://Priyanshu825:priyanshu825
 DB_NAME = os.environ.get("DATABASE_NAME", "Priyanshu825")
 #--------------------------------------------
 FSUB_LINK_EXPIRY = int(os.getenv("FSUB_LINK_EXPIRY", "10"))  # 0 means no expiry
-BAN_SUPPORT = os.environ.get("BAN_SUPPORT", "https://t.me/+qAwnfPIm6Wo2ODJl")
+BAN_SUPPORT = os.environ.get("BAN_SUPPORT", https://t.me/+SWgPhjNqWFM1NzM1")
 TG_BOT_WORKERS = int(os.environ.get("TG_BOT_WORKERS", "200"))
 #--------------------------------------------
 START_PIC = os.environ.get("START_PIC", "https://graph.org/file/ad59c07cc2ae60f469786-e5ed6b2d233d25e1b4.jpg")
