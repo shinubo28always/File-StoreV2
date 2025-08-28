@@ -4,9 +4,9 @@ from pyrogram.enums import ChatAction
 from config import HELP_TXT  # ✅ Import the help text
 
 @Client.on_message(filters.command("help") & filters.private)
-async def help_command(bot: Client, message: Message):
-    # Show upload animation while sending help
-    await client.send_chat_action(chat_id, "typing")        # Shows "typing..."
+async def help_command(client: Client, message: Message):
+    # Show typing animation while sending help
+    await client.send_chat_action(message.chat.id, ChatAction.TYPING)
 
     # Send help message from config
     await message.reply_text(
