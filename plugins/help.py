@@ -20,7 +20,7 @@ async def help_command(client: Client, message: Message):
     user_mention = message.from_user.mention
     help_text = HELP_TEXT.format(user_mention=user_mention)
 
-    await client.send_chat_action(message.chat.id, ChatAction.TYPING)
+    await client.send_chat_action(message.chat.id, ChatAction.typing)
 
     # Start with a single dot to avoid empty message issues
     typing_msg = await message.reply_text(".", quote=True)
