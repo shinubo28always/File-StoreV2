@@ -3,7 +3,6 @@ from pyrogram import Client, filters
 from pyrogram.types import Message
 from pyrogram.enums import ChatAction
 
-# Base help text with a placeholder {}
 HELP_TEXT = """⁉️ Hᴇʏ...!! {user_mention} ~
 
 ➪ I ᴀᴍ ᴀ ᴘʀɪᴠᴀᴛᴇ ғɪʟᴇ sʜᴀʀɪɴɢ ʙᴏᴛ, ᴍᴇᴀɴᴛ ᴛᴏ ᴘʀᴏᴠɪᴅᴇ ғɪʟᴇs ᴀɴᴅ ɴᴇᴄᴇssᴀʀʏ sᴛᴜғғ ᴛʜʀᴏᴜɢʜ sᴘᴇᴄɪᴀʟ ʟɪɴᴋ ғᴏʀ sᴘᴇᴄɪғɪᴄ ᴄʜᴀɴɴᴇʟs.
@@ -18,28 +17,29 @@ HELP_TEXT = """⁉️ Hᴇʏ...!! {user_mention} ~
 
 @Client.on_message(filters.command("help") & filters.private)
 async def help_command(client: Client, message: Message):
-    # Mention the user dynamically
-    user_mention = message.from_user.mention  # Generates clickable mention
-
-    # Replace placeholder with actual user mention
+    user_mention = message.from_user.mention
     help_text = HELP_TEXT.format(user_mention=user_mention)
 
-    # Show typing animation
     await client.send_chat_action(message.chat.id, ChatAction.TYPING)
-    
-    # Send a single temporary message to edit progressively
-    typing_msg = await message.reply_text("⌛ Preparing help...", quote=True)
-    
-    await asyncio.sleep(1)
-    
-    # Progressive typing effect
+
+    # Start with a single dot to avoid empty message issues
+    typing_msg = await message.reply_text(".", quote=True)
+    await asyncio.sleep(0.5)  # Slight pause before starting
+
     text_to_send = ""
+    last_sent_text = ""
     for char in help_text:
         text_to_send += char
-        await typing_msg.edit_text(text_to_send)
-        await asyncio.sleep(0.02)  # Adjust typing speed
+        # Only edit if content changed
+        if text_to_send != last_sent_text:
+            try:
+                await typing_msg.edit_text(text_to_send)
+                last_sent_text = text_to_send
+            except:
+                pass  # Ignore MESSAGE_NOT_MODIFIED
+        await asyncio.sleep(0.02)  # Typing speed
 
-    # Done! Single message now contains the full help text with user mention
+    # Done! The full message is now shown
 
 
 # Added by VoidXTora 
