@@ -2,7 +2,12 @@ import asyncio
 from pyrogram import Client, filters
 from pyrogram.types import Message
 from pyrogram.enums import ChatAction
+import logging
 
+# Setup logging to catch any errors
+logging.basicConfig(filename="bot_errors.log", level=logging.ERROR)
+
+# Help text with a placeholder for user mention
 HELP_TEXT = """⁉️ Hᴇʏ...!! {user_mention} ~
 
 ➪ I ᴀᴍ ᴀ ᴘʀɪᴠᴀᴛᴇ ғɪʟᴇ sʜᴀʀɪɴɢ ʙᴏᴛ, ᴍᴇᴀɴᴛ ᴛᴏ ᴘʀᴏᴠɪᴅᴇ ғɪʟᴇs ᴀɴᴅ ɴᴇᴄᴇssᴀʀʏ sᴛᴜғғ ᴛʜʀᴏᴜɢʜ sᴘᴇᴄɪᴀʟ ʟɪɴᴋ ғᴏʀ sᴘᴇᴄɪғɪᴄ ᴄʜᴀɴɴᴇʟs.
@@ -20,27 +25,30 @@ async def help_command(client: Client, message: Message):
     user_mention = message.from_user.mention
     help_text = HELP_TEXT.format(user_mention=user_mention)
 
-    # Correct typing action
+    # Show typing animation
     await client.send_chat_action(message.chat.id, ChatAction.TYPING)
 
-    # Start with a single dot to avoid empty message issues
+    # Start with a single dot to initialize the message
     typing_msg = await message.reply_text(".", quote=True)
-    await asyncio.sleep(0.5)  # Slight pause before starting
+    await asyncio.sleep(0.5)
 
+    # Chunk typing logic
     text_to_send = ""
     last_sent_text = ""
-    for char in help_text:
-        text_to_send += char
-        # Only edit if content changed
-        if text_to_send != last_sent_text:
-            try:
-                await typing_msg.edit_text(text_to_send)
-                last_sent_text = text_to_send
-            except:
-                pass  # Ignore MESSAGE_NOT_MODIFIED
-        await asyncio.sleep(0.02)  # Typing speed
 
-    # Done! The full message is now shown
-
-
-# Added by VoidXTora 
+    # Split help text into lines for smooth pauses
+    lines = help_text.split("\n")
+    for line in lines:
+        # Type line in small character chunks
+        for i in range(0, len(line), 5):  # 5 characters per edit
+            chunk = line[:i+5]
+            new_text = text_to_send + chunk
+            if new_text != last_sent_text:
+                try:
+                    await typing_msg.edit_text(new_text)
+                    last_sent_text = new_text
+                except Exception as e:
+                    logging.error(e)
+            await asyncio.sleep(0.02)  # Typing speed per chunk
+        text_to_send += line + "\n"
+        await asyncio.sleep(0.2)  # Small pause between lines
