@@ -4,7 +4,7 @@ from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram.enums import ChatAction, ParseMode
 
 # ==== Configurable ====
-HELP_IMAGE_URL = "https://graph.org/file/53bab5e049a9b0133c354-b8767e238320087219.jpg"  # <- replace with your image
+HELP_IMAGE_URL = "https://graph.org/file/53bab5e049a9b0133c354-b8767e238320087219.jpg"
 
 HELP_TEXT = """⁉️ Hᴇʏ...!! {user_mention} ~
 
@@ -21,34 +21,25 @@ HELP_TEXT = """⁉️ Hᴇʏ...!! {user_mention} ~
 
 @Client.on_message(filters.command("help") & filters.private)
 async def help_command(client: Client, message: Message):
-    # Show typing while we display a temporary loader
+    # Step 1: Show typing + loader
     await client.send_chat_action(message.chat.id, ChatAction.TYPING)
-
-    # Temporary loading effect (exactly as requested)
     loader = await message.reply_text("!!!!!!!", quote=True)
 
-    # Small effect delay (tweak if you want)
-    await asyncio.sleep(1.2)
+    # Step 2: Keep typing while loader is visible
+    for _ in range(2):  # about 2 seconds
+        await client.send_chat_action(message.chat.id, ChatAction.TYPING)
+        await asyncio.sleep(1)
 
-    # Try deleting the user's /help command (Telegram doesn't allow deleting user messages in private chats)
-    try:
+    # Step 3: Delete user /help (if allowed) and loader
+    with contextlib.suppress(Exception):
         await message.delete()
-    except Exception:
-        pass  # Ignored if not permitted
-
-    # Delete the loader we sent
-    try:
+    with contextlib.suppress(Exception):
         await loader.delete()
-    except Exception:
-        pass
 
-    # Build a safe clickable mention for Markdown
-    user = message.from_user
-    user_mention = f"[{user.first_name}](tg://user?id={user.id})"
+    # Step 4: Prepare final caption
+    caption = HELP_TEXT.format(user_mention=message.from_user.mention)
 
-    caption = HELP_TEXT.format(user_mention=user_mention)
-
-    # Inline buttons
+    # Step 5: Buttons
     buttons = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton("Owner", url="https://t.me/VoidXTora")],
@@ -57,10 +48,7 @@ async def help_command(client: Client, message: Message):
         ]
     )
 
-    # Optional: show typing again just before sending the final help
-    await client.send_chat_action(message.chat.id, ChatAction.TYPING)
-
-    # Send final Help: image + caption + buttons (all at once)
+    # Step 6: Send help photo + caption + buttons
     await client.send_photo(
         chat_id=message.chat.id,
         photo=HELP_IMAGE_URL,
