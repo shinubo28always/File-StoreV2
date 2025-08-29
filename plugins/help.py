@@ -1,62 +1,51 @@
 import asyncio
-import contextlib
 from pyrogram import Client, filters
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
-from pyrogram.enums import ChatAction, ParseMode
 
 # ==== Configurable ====
 HELP_IMAGE_URL = "https://graph.org/file/53bab5e049a9b0133c354-b8767e238320087219.jpg"
 
 HELP_TEXT = """⁉️ Hᴇʏ...!! {user_mention} ~
 
-➪ I ᴀᴍ ᴀ ᴘʀɪᴠᴀᴛᴇ ғɪʟᴇ sʜᴀʀɪɴɢ ʙᴏᴛ, ᴍᴇᴀɴᴛ ᴛᴏ ᴘʀᴏᴠɪᴅᴇ ғɪʟᴇs ᴀɴᴅ ɴᴇᴄᴇssᴀʀʏ sᴛᴜғғ ᴛʜʀᴏᴜɢʜ sᴘᴇᴄɪᴀʟ ʟɪɴᴋ ғᴏʀ sᴘᴇᴄɪғɪᴄ ᴄʜᴀɴɴᴇʟs.
+➪ Mᴀɪɴ ᴇᴋ ᴘʀɪᴠᴀᴛᴇ ғɪʟᴇ sʜᴀʀɪɴɢ ʙᴏᴛ ʜᴜ, ᴊᴏ ᴀᴘᴋᴏ ғɪʟᴇs ᴀᴜʀ ᴅɪғғᴇʀᴇɴᴛ sᴛᴜғғ sᴘᴇᴄɪᴀʟ ʟɪɴᴋ sᴇ ᴅᴇᴛᴀ ʜᴀɪ ғᴏʀ ᴘᴀʀᴛɪᴄᴜʟᴀʀ ᴄʜᴀɴɴᴇʟs.
 
-➪ Iɴ ᴏʀᴅᴇʀ ᴛᴏ ɢᴇᴛ ᴛʜᴇ ғɪʟᴇs ʏᴏᴜ ʜᴀᴠᴇ ᴛᴏ ᴊᴏɪɴ ᴛʜᴇ ᴀʟʟ ᴍᴇɴᴛɪᴏɴᴇᴅ ᴄʜᴀɴɴᴇʟ ᴛʜᴀᴛ ɪ ᴘʀᴏᴠɪᴅᴇ ʏᴏᴜ ᴛᴏ ᴊᴏɪɴ. Yᴏᴜ ᴄᴀɴ ɴᴏᴛ ᴀᴄᴄᴇss ᴏʀ ɢᴇᴛ ᴛʜᴇ ғɪʟᴇs ᴜɴʟᴇss ʏᴏᴜ ᴊᴏɪɴᴇᴅ ᴀʟʟ ᴄʜᴀɴɴᴇʟs.
+➪ Fɪʟᴇ ʟᴇɴᴇ ᴋᴇ ʟɪʏᴇ ᴀᴘᴋᴏ ᴍᴇɴᴛɪᴏɴᴇᴅ ᴄʜᴀɴɴᴇʟs ᴊᴏɪɴ ᴋᴀʀɴᴀ ᴘᴀᴅᴇɢᴀ. Jᴀʙ ᴛᴀᴋ ᴀᴘ ᴀʟʟ ᴄʜᴀɴɴᴇʟs ᴊᴏɪɴ ɴᴀʜɪɴ ᴋᴀʀᴛᴇ, ғɪʟᴇ ᴀᴄᴄᴇss ɴᴀʜɪɴ ʜᴏɢᴀ.
 
-➪ Sᴏ ᴊᴏɪɴ Mᴇɴᴛɪᴏɴᴇᴅ Cʜᴀɴɴᴇʟs ᴛᴏ ɢᴇᴛ Fɪʟᴇs ᴏʀ ɪɴɪᴛɪᴀᴛᴇ ᴍᴇssᴀɢᴇs...
+➪ Isʟɪʏᴇ sᴀʀᴇ ᴄʜᴀɴɴᴇʟs ᴊᴏɪɴ ᴋᴀʀᴏ, ᴛᴀʙʜɪ ғɪʟᴇ ᴍɪʟᴇɢᴀ ʏᴀ ᴍᴇssᴀɢᴇs ɪɴɪᴛɪᴀᴛᴇ ʜᴏɴɢᴇ...
 
-‣ /help - Oᴘᴇɴ ᴛʜɪs ʜᴇʟᴘ ᴍᴇssᴀɢᴇ !
+‣ /help - Yᴇʜ ʜᴇʟᴘ ᴍᴇɴᴜ ᴘʜɪʀ sᴇ ᴏᴘᴇɴ ᴋᴀʀᴏ !
 
-◈ Sᴛɪʟʟ ʜᴀᴠᴇ ᴅᴏᴜʙᴛs, ᴄᴏɴᴛᴀᴄᴛ ʙᴇʟᴏᴡ ᴘᴇʀsᴏɴs/ɢʀᴏᴜᴘ ᴀs ᴘᴇʀ ʏᴏᴜʀ ɴᴇᴇᴅ !"""
+◈ Aɢᴀʀ ᴀʙʜɪ ʙʜɪ ᴅᴏᴜʙᴛ ʜᴀɪ, ɴɪᴄʜᴇ ʙᴜᴛᴛᴏɴ sᴇ ᴄᴏɴᴛᴀᴄᴛ ᴋᴀʀᴏ..."""
 # =====================
+
 
 @Client.on_message(filters.command("help") & filters.private)
 async def help_command(client: Client, message: Message):
-    # Step 1: Show typing & send fake loading
-    await client.send_chat_action(message.chat.id, ChatAction.TYPING)
-    loader = await message.reply_text("!!!!!!!", quote=True)
+    # Make fancy HTML mention
+    user_mention = f"<a href='tg://user?id={message.from_user.id}'>➣ {message.from_user.first_name}</a>"
 
-    # Step 2: Keep "typing…" while loader is visible
-    for _ in range(3):  # ~3 seconds total
-        await client.send_chat_action(message.chat.id, ChatAction.TYPING)
-        await asyncio.sleep(1)
+    # Step 1: Loading animation
+    loading = await message.reply_text("!")
+    for dots in ["!!", "!!!", "!!!!", "!!!!!"]:
+        await asyncio.sleep(0.5)
+        await client.send_chat_action(message.chat.id, "typing")
+        await loading.edit_text(dots)
 
-    # Step 3: Delete /help message (if possible) and loader
-    with contextlib.suppress(Exception):
-        await message.delete()
-    with contextlib.suppress(Exception):
-        await loader.delete()
+    # Step 2: Remove loading
+    await asyncio.sleep(0.5)
+    await loading.delete()
 
-    # Step 4: Final caption with user mention
-    caption = HELP_TEXT.format(user_mention=message.from_user.mention)
-
-    # Step 5: Inline buttons
-    buttons = InlineKeyboardMarkup(
-        [
-            [InlineKeyboardButton("Owner", url="https://t.me/VoidXTora")],
-            [InlineKeyboardButton("👨‍💻 Support", url="https://t.me/Anime_Talk_Mythic")],
-            [InlineKeyboardButton("🔙 Back", callback_data="back")]
-        ]
-    )
-
-    # Step 6: Keep typing just before sending final help
-    await client.send_chat_action(message.chat.id, ChatAction.TYPING)
-
-    # Step 7: Send help image + text + buttons
+    # Step 3: Send help message with image + caption
     await client.send_photo(
         chat_id=message.chat.id,
         photo=HELP_IMAGE_URL,
-        caption=caption,
-        reply_markup=buttons,
-        parse_mode=ParseMode.MARKDOWN
+        caption=HELP_TEXT.format(user_mention=user_mention),
+        reply_markup=InlineKeyboardMarkup(
+            [
+                [InlineKeyboardButton("👤 Owner", url="https://t.me/VoidXTora")],
+                [InlineKeyboardButton("👨‍💻 Support", url="https://t.me/Anime_Talk_Mythic")],
+                [InlineKeyboardButton("🔙 Back", callback_data="back")]
+            ]
+        ),
+        parse_mode="HTML"
     )
