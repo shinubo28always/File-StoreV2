@@ -1,4 +1,5 @@
 import asyncio
+import contextlib
 from pyrogram import Client, filters
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram.enums import ChatAction, ParseMode
@@ -21,25 +22,25 @@ HELP_TEXT = """⁉️ Hᴇʏ...!! {user_mention} ~
 
 @Client.on_message(filters.command("help") & filters.private)
 async def help_command(client: Client, message: Message):
-    # Step 1: Show typing + loader
+    # Step 1: Show typing & send fake loading
     await client.send_chat_action(message.chat.id, ChatAction.TYPING)
     loader = await message.reply_text("!!!!!!!", quote=True)
 
-    # Step 2: Keep typing while loader is visible
-    for _ in range(2):  # about 2 seconds
+    # Step 2: Keep "typing…" while loader is visible
+    for _ in range(3):  # ~3 seconds total
         await client.send_chat_action(message.chat.id, ChatAction.TYPING)
         await asyncio.sleep(1)
 
-    # Step 3: Delete user /help (if allowed) and loader
+    # Step 3: Delete /help message (if possible) and loader
     with contextlib.suppress(Exception):
         await message.delete()
     with contextlib.suppress(Exception):
         await loader.delete()
 
-    # Step 4: Prepare final caption
+    # Step 4: Final caption with user mention
     caption = HELP_TEXT.format(user_mention=message.from_user.mention)
 
-    # Step 5: Buttons
+    # Step 5: Inline buttons
     buttons = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton("Owner", url="https://t.me/VoidXTora")],
@@ -48,7 +49,10 @@ async def help_command(client: Client, message: Message):
         ]
     )
 
-    # Step 6: Send help photo + caption + buttons
+    # Step 6: Keep typing just before sending final help
+    await client.send_chat_action(message.chat.id, ChatAction.TYPING)
+
+    # Step 7: Send help image + text + buttons
     await client.send_photo(
         chat_id=message.chat.id,
         photo=HELP_IMAGE_URL,
