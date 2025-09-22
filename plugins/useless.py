@@ -25,6 +25,7 @@ from bot import Bot
 from config import *
 from helper_func import *
 from database.database import *
+from plugins.VoidXTora import check_owner_only, check_admin_or_owner
 
 #=====================================================================================##
 
@@ -43,30 +44,24 @@ WAIT_MSG = "<b>Working....</b>"
 #=====================================================================================##
 
 
-@Bot.on_message(filters.command('users') & filters.private & admin)
+@Bot.on_message(filters.command('users') & filters.private)
 async def get_users(client: Bot, message: Message):
+    if not await check_admin_or_owner(message):  # ❌ Blocked if not admin/owner
+        return
     msg = await client.send_message(chat_id=message.chat.id, text=WAIT_MSG)
     users = await db.full_userbase()
     await msg.edit(f"{len(users)} users are using this bot")
 
-# Don't Remove Credit @CodeFlix_Bots, @rohit_1888
-# Ask Doubt on telegram @CodeflixSupport
-#
-# Copyright (C) 2025 by Codeflix-Bots@Github, < https://github.com/Codeflix-Bots >.
-#
-# This file is part of < https://github.com/Codeflix-Bots/FileStore > project,
-# and is released under the MIT License.
-# Please see < https://github.com/Codeflix-Bots/FileStore/blob/master/LICENSE >
-#
-# All rights reserved.
-#
+
 
 #=====================================================================================##
 
 #AUTO-DELETE
 
-@Bot.on_message(filters.private & filters.command('dlt_time') & admin)
+@Bot.on_message(filters.private & filters.command('dlt_time'))
 async def set_delete_time(client: Bot, message: Message):
+    if not await check_admin_or_owner(message):  # ❌ Blocked if not admin/owner
+        return
     try:
         duration = int(message.command[1])
 
@@ -77,22 +72,24 @@ async def set_delete_time(client: Bot, message: Message):
     except (IndexError, ValueError):
         await message.reply("<b>Pʟᴇᴀsᴇ ᴘʀᴏᴠɪᴅᴇ ᴀ ᴠᴀʟɪᴅ ᴅᴜʀᴀᴛɪᴏɴ ɪɴ sᴇᴄᴏɴᴅs.</b> Usage: /dlt_time {duration}")
 
-@Bot.on_message(filters.private & filters.command('check_dlt_time') & admin)
+@Bot.on_message(filters.private & filters.command('check_dlt_time'))
 async def check_delete_time(client: Bot, message: Message):
+    if not await check_admin_or_owner(message):  # ❌ Blocked if not admin/owner
+        return
     duration = await db.get_del_timer()
 
     await message.reply(f"<b><blockquote>Cᴜʀʀᴇɴᴛ ᴅᴇʟᴇᴛᴇ ᴛɪᴍᴇʀ ɪs sᴇᴛ ᴛᴏ {duration}sᴇᴄᴏɴᴅs.</blockquote></b>")
 
 #=====================================================================================##
 
-# Don't Remove Credit @CodeFlix_Bots, @rohit_1888
-# Ask Doubt on telegram @CodeflixSupport
-#
-# Copyright (C) 2025 by Codeflix-Bots@Github, < https://github.com/Codeflix-Bots >.
-#
-# This file is part of < https://github.com/Codeflix-Bots/FileStore > project,
-# and is released under the MIT License.
-# Please see < https://github.com/Codeflix-Bots/FileStore/blob/master/LICENSE >
-#
-# All rights reserved.
-#
+"""
+Force-Sub Module for Telegram Bot
+
+#=====================================================================================##
+# Credits:- @VoidXTora
+# Maintained by: Mythic_Bots
+# Support: @MythicBot_Support
+#=====================================================================================##
+This file is part of MythicBots Project.
+Base Repo Codeflixbot.
+"""
