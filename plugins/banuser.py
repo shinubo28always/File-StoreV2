@@ -1,14 +1,6 @@
-# Don't Remove Credit @CodeFlix_Bots, @rohit_1888
-# Ask Doubt on telegram @CodeflixSupport
-#
-# Copyright (C) 2025 by Codeflix-Bots@Github, < https://github.com/Codeflix-Bots >.
-#
-# This file is part of < https://github.com/Codeflix-Bots/FileStore > project,
-# and is released under the MIT License.
-# Please see < https://github.com/Codeflix-Bots/FileStore/blob/master/LICENSE >
-#
-# All rights reserved.
-#
+# Don't Remove Credit @VoidXTora
+# Ask Doubt on telegram @MythicBot_Support
+
 
 import asyncio
 import os
@@ -29,7 +21,7 @@ from plugins.VoidXTora import check_owner_only, check_admin_or_owner
 
 
 #BAN-USER-SYSTEM
-@Bot.on_message(filters.private & filters.command('ban') & admin)
+@Bot.on_message(filters.private & filters.command('ban'))
 async def add_banuser(client: Client, message: Message):  
     if not await check_admin_or_owner(message):
         return      
@@ -75,7 +67,7 @@ async def add_banuser(client: Client, message: Message):
     else:
         await pro.edit(f"<b>❌ Nᴏ ᴜsᴇʀs ᴡᴇʀᴇ ʙᴀɴɴᴇᴅ.</b>\n\n{report}", reply_markup=reply_markup)
 
-@Bot.on_message(filters.private & filters.command('unban') & admin)
+@Bot.on_message(filters.private & filters.command('unban'))
 async def delete_banuser(client: Client, message: Message): 
     if not await check_admin_or_owner(message):
         return
@@ -118,7 +110,7 @@ async def delete_banuser(client: Client, message: Message):
 
     await pro.edit(f"<b>🚫 Uɴʙᴀɴ Rᴇᴘᴏʀᴛ:</b>\n\n{report}", reply_markup=reply_markup)
 
-@Bot.on_message(filters.private & filters.command('banlist') & admin)
+@Bot.on_message(filters.private & filters.command('banlist'))
 async def get_banuser_list(client: Client, message: Message): 
     if not await check_admin_or_owner(message):
         return       
@@ -130,7 +122,7 @@ async def get_banuser_list(client: Client, message: Message):
 
     result = "<b>🚫 Bᴀɴɴᴇᴅ Usᴇʀs:</b>\n\n"
     for uid in banuser_ids:
-        await message.reply_chat_action(ChatAction.Playing A Game)
+        await message.reply_chat_action(ChatAction.CHOOSE_STICKER)
         try:
             user = await client.get_users(uid)
             user_link = f'<a href="tg://user?id={uid}">{user.first_name}</a>'
