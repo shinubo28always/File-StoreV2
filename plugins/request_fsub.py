@@ -1,14 +1,16 @@
-# Don't Remove Credit @CodeFlix_Bots, @rohit_1888
-# Ask Doubt on telegram @CodeflixSupport
-#
-# Copyright (C) 2025 by Codeflix-Bots@Github, < https://github.com/Codeflix-Bots >.
-#
-# This file is part of < https://github.com/Codeflix-Bots/FileStore > project,
-# and is released under the MIT License.
-# Please see < https://github.com/Codeflix-Bots/FileStore/blob/master/LICENSE >
-#
-# All rights reserved.
-#
+"""
+Force-Sub Module for Telegram Bot
+
+Credits: @VoidXTora
+Mythic_Bots
+MythicBot_Support
+
+This file is part of MythicBots Project.
+Released Base Repo Codeflixbot.
+"""
+
+
+
 import asyncio
 import os
 import random
@@ -22,22 +24,16 @@ from bot import Bot
 from config import *
 from helper_func import *
 from database.database import *
+from plugins.VoidXTora import check_admin_or_owner
 
-# Don't Remove Credit @CodeFlix_Bots, @rohit_1888
-# Ask Doubt on telegram @CodeflixSupport
-#
-# Copyright (C) 2025 by Codeflix-Bots@Github, < https://github.com/Codeflix-Bots >.
-#
-# This file is part of < https://github.com/Codeflix-Bots/FileStore > project,
-# and is released under the MIT License.
-# Please see < https://github.com/Codeflix-Bots/FileStore/blob/master/LICENSE >
-#
-# All rights reserved.
-#
+#==========================================
+# Force-Sub Mode Toggle Command
+#==========================================
+@Bot.on_message(filters.command('fsub_mode') & filters.private)
+async def change_force_sub_mode(client, message):
+    if not await check_admin_or_owner(message):
+        return
 
-#Request force sub mode commad,,,,,,
-@Bot.on_message(filters.command('fsub_mode') & filters.private & admin)
-async def change_force_sub_mode(client: Client, message: Message):
     temp = await message.reply("<b><i>ᴡᴀɪᴛ ᴀ sᴇᴄ..</i></b>", quote=True)
     channels = await db.show_channels()
 
@@ -50,76 +46,57 @@ async def change_force_sub_mode(client: Client, message: Message):
             chat = await client.get_chat(ch_id)
             mode = await db.get_channel_mode(ch_id)
             status = "🟢" if mode == "on" else "🔴"
-            title = f"{status} {chat.title}"
-            buttons.append([InlineKeyboardButton(title, callback_data=f"rfs_ch_{ch_id}")])
+            buttons.append([InlineKeyboardButton(f"{status} {chat.title}", callback_data=f"rfs_ch_{ch_id}")])
         except:
             buttons.append([InlineKeyboardButton(f"⚠️ {ch_id} (Unavailable)", callback_data=f"rfs_ch_{ch_id}")])
 
     buttons.append([InlineKeyboardButton("Close ✖️", callback_data="close")])
-
     await temp.edit(
         "<b>⚡ Select a channel to toggle Force-Sub Mode:</b>",
         reply_markup=InlineKeyboardMarkup(buttons),
         disable_web_page_preview=True
     )
 
-# This handler captures membership updates (like when a user leaves, banned)
+#==========================================
+# Chat Member Update Handler (leaves/bans)
+#==========================================
 @Bot.on_chat_member_updated()
-async def handle_Chatmembers(client, chat_member_updated: ChatMemberUpdated):    
+async def handle_chat_members(client, chat_member_updated: ChatMemberUpdated):
     chat_id = chat_member_updated.chat.id
 
     if await db.reqChannel_exist(chat_id):
         old_member = chat_member_updated.old_chat_member
-
         if not old_member:
             return
-
         if old_member.status == ChatMemberStatus.MEMBER:
             user_id = old_member.user.id
-
             if await db.req_user_exist(chat_id, user_id):
                 await db.del_req_user(chat_id, user_id)
 
-
-# This handler will capture any join request to the channel/group where the bot is an admin
+#==========================================
+# Join Request Handler
+#==========================================
 @Bot.on_chat_join_request()
 async def handle_join_request(client, chat_join_request):
     chat_id = chat_join_request.chat.id
     user_id = chat_join_request.from_user.id
 
-    #print(f"[JOIN REQUEST] User {user_id} sent join request to {chat_id}")
-
-    # Print the result of db.reqChannel_exist to check if the channel exists
-    channel_exists = await db.reqChannel_exist(chat_id)
-    #print(f"Channel {chat_id} exists in the database: {channel_exists}")
-
-    if channel_exists:
+    if await db.reqChannel_exist(chat_id):
         if not await db.req_user_exist(chat_id, user_id):
             await db.req_user(chat_id, user_id)
-            #print(f"Added user {user_id} to request list for {chat_id}")
 
-# Don't Remove Credit @CodeFlix_Bots, @rohit_1888
-# Ask Doubt on telegram @CodeflixSupport
-#
-# Copyright (C) 2025 by Codeflix-Bots@Github, < https://github.com/Codeflix-Bots >.
-#
-# This file is part of < https://github.com/Codeflix-Bots/FileStore > project,
-# and is released under the MIT License.
-# Please see < https://github.com/Codeflix-Bots/FileStore/blob/master/LICENSE >
-#
-# All rights reserved.
-#
+#==========================================
+# Add Force-Sub Channel
+#==========================================
+@Bot.on_message(filters.command('addchnl') & filters.private)
+async def add_force_sub(client, message):
+    if not await check_admin_or_owner(message):
+        return
 
-# Add channel
-@Bot.on_message(filters.command('addchnl') & filters.private & admin)
-async def add_force_sub(client: Client, message: Message):
     temp = await message.reply("Wait a sec...", quote=True)
     args = message.text.split(maxsplit=1)
-
     if len(args) != 2:
-        return await temp.edit(
-            "Usage:\n<code>/addchnl -100xxxxxxxxxx</code>"
-        )
+        return await temp.edit("Usage:\n<code>/addchnl -100xxxxxxxxxx</code>")
 
     try:
         chat_id = int(args[1])
@@ -139,7 +116,6 @@ async def add_force_sub(client: Client, message: Message):
         if bot_member.status not in [ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.OWNER]:
             return await temp.edit("❌ Bot must be admin in that chat.")
 
-        # Try to get invite link
         try:
             link = await client.export_chat_invite_link(chat.id)
         except Exception:
@@ -156,22 +132,14 @@ async def add_force_sub(client: Client, message: Message):
     except Exception as e:
         return await temp.edit(f"❌ Failed to add chat:\n<code>{chat_id}</code>\n\n<i>{e}</i>")
 
+#==========================================
+# Delete Force-Sub Channel
+#==========================================
+@Bot.on_message(filters.command('delchnl') & filters.private)
+async def del_force_sub(client, message):
+    if not await check_admin_or_owner(message):
+        return
 
-# Don't Remove Credit @CodeFlix_Bots, @rohit_1888
-# Ask Doubt on telegram @CodeflixSupport
-#
-# Copyright (C) 2025 by Codeflix-Bots@Github, < https://github.com/Codeflix-Bots >.
-#
-# This file is part of < https://github.com/Codeflix-Bots/FileStore > project,
-# and is released under the MIT License.
-# Please see < https://github.com/Codeflix-Bots/FileStore/blob/master/LICENSE >
-#
-# All rights reserved.
-#
-
-# Delete channel
-@Bot.on_message(filters.command('delchnl') & filters.private & admin)
-async def del_force_sub(client: Client, message: Message):
     temp = await message.reply("<b><i>ᴡᴀɪᴛ ᴀ sᴇᴄ..</i></b>", quote=True)
     args = message.text.split(maxsplit=1)
     all_channels = await db.show_channels()
@@ -197,9 +165,14 @@ async def del_force_sub(client: Client, message: Message):
     else:
         return await temp.edit(f"<b>❌ Channel not found in force-sub list:</b> <code>{ch_id}</code>")
 
-# View all channels
-@Bot.on_message(filters.command('listchnl') & filters.private & admin)
-async def list_force_sub_channels(client: Client, message: Message):
+#==========================================
+# List All Force-Sub Channels
+#==========================================
+@Bot.on_message(filters.command('listchnl') & filters.private)
+async def list_force_sub_channels(client, message):
+    if not await check_admin_or_owner(message):
+        return
+
     temp = await message.reply("<b><i>ᴡᴀɪᴛ ᴀ sᴇᴄ..</i></b>", quote=True)
     channels = await db.show_channels()
 
@@ -215,16 +188,8 @@ async def list_force_sub_channels(client: Client, message: Message):
         except Exception:
             result += f"<b>•</b> <code>{ch_id}</code> — <i>Unavailable</i>\n"
 
-    await temp.edit(result, disable_web_page_preview=True, reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Close ✖️", callback_data="close")]]))
-
-# Don't Remove Credit @CodeFlix_Bots, @rohit_1888
-# Ask Doubt on telegram @CodeflixSupport
-#
-# Copyright (C) 2025 by Codeflix-Bots@Github, < https://github.com/Codeflix-Bots >.
-#
-# This file is part of < https://github.com/Codeflix-Bots/FileStore > project,
-# and is released under the MIT License.
-# Please see < https://github.com/Codeflix-Bots/FileStore/blob/master/LICENSE >
-#
-# All rights reserved.
-#
+    await temp.edit(
+        result,
+        disable_web_page_preview=True,
+        reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Close ✖️", callback_data="close")]])
+    )
