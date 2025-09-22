@@ -25,12 +25,14 @@ from bot import Bot
 from config import *
 from helper_func import *
 from database.database import *
-
+from plugins.VoidXTora import check_owner_only, check_admin_or_owner
 
 
 #BAN-USER-SYSTEM
 @Bot.on_message(filters.private & filters.command('ban') & admin)
-async def add_banuser(client: Client, message: Message):        
+async def add_banuser(client: Client, message: Message):  
+    if not await check_admin_or_owner(message):
+        return      
     pro = await message.reply("⏳ <i>Pʀᴏᴄᴇssɪɴɢ ʀᴇǫᴜᴇsᴛ...</i>", quote=True)
     banuser_ids = await db.get_ban_users()
     banusers = message.text.split()[1:]
@@ -74,7 +76,9 @@ async def add_banuser(client: Client, message: Message):
         await pro.edit(f"<b>❌ Nᴏ ᴜsᴇʀs ᴡᴇʀᴇ ʙᴀɴɴᴇᴅ.</b>\n\n{report}", reply_markup=reply_markup)
 
 @Bot.on_message(filters.private & filters.command('unban') & admin)
-async def delete_banuser(client: Client, message: Message):        
+async def delete_banuser(client: Client, message: Message): 
+    if not await check_admin_or_owner(message):
+        return
     pro = await message.reply("⏳ <i>Pʀᴏᴄᴇssɪɴɢ ʀᴇǫᴜᴇsᴛ...</i>", quote=True)
     banuser_ids = await db.get_ban_users()
     banusers = message.text.split()[1:]
@@ -115,7 +119,9 @@ async def delete_banuser(client: Client, message: Message):
     await pro.edit(f"<b>🚫 Uɴʙᴀɴ Rᴇᴘᴏʀᴛ:</b>\n\n{report}", reply_markup=reply_markup)
 
 @Bot.on_message(filters.private & filters.command('banlist') & admin)
-async def get_banuser_list(client: Client, message: Message):        
+async def get_banuser_list(client: Client, message: Message): 
+    if not await check_admin_or_owner(message):
+        return       
     pro = await message.reply("⏳ <i>Fᴇᴛᴄʜɪɴɢ Bᴀɴ Lɪsᴛ...</i>", quote=True)
     banuser_ids = await db.get_ban_users()
 
