@@ -1,9 +1,8 @@
 import asyncio
 from pyrogram import Client, filters, enums
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
-from bot import Bot  # use your Bot instance
+from bot import Bot  # your bot instance
 
-# ==== Configurable ====
 HELP_IMAGE_URL = "https://graph.org/file/53bab5e049a9b0133c354-b8767e238320087219.jpg"
 
 HELP_TEXT = """⁉️ Hᴇʏ...!! {user_mention} ~
@@ -33,8 +32,8 @@ async def help_command(client: Client, message: Message):
     await asyncio.sleep(0.5)
     await loading.delete()
 
-    # Step 2: Send help message with image + caption
-    await bot.send_photo(
+    # Step 2: Send help message
+    await client.send_photo(
         chat_id=message.chat.id,
         photo=HELP_IMAGE_URL,
         caption=HELP_TEXT.format(user_mention=user_mention),
