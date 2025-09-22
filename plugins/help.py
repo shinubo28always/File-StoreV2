@@ -34,7 +34,7 @@ async def help_command(client: Client, message: Message):
     await loading.delete()
 
     # Step 2: Send help message with image + caption
-    await client.send_photo(
+    await bot.send_photo(
         chat_id=message.chat.id,
         photo=HELP_IMAGE_URL,
         caption=HELP_TEXT.format(user_mention=user_mention),
