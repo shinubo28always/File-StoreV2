@@ -130,7 +130,7 @@ async def get_banuser_list(client: Client, message: Message):
 
     result = "<b>🚫 Bᴀɴɴᴇᴅ Usᴇʀs:</b>\n\n"
     for uid in banuser_ids:
-        await message.reply_chat_action(ChatAction.TYPING)
+        await message.reply_chat_action(ChatAction.Playing A Game)
         try:
             user = await client.get_users(uid)
             user_link = f'<a href="tg://user?id={uid}">{user.first_name}</a>'
