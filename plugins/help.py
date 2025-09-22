@@ -28,7 +28,7 @@ async def help_command(client: Client, message: Message):
     loading = await message.reply_text("Loading!")
     for dots in ["!!", "!!!", "!!!!", "!!!!!"]:
         await asyncio.sleep(0.5)
-        await client.send_chat_action(message.chat.id, enums.ChatAction.PLAYING_GAME)
+        await client.send_chat_action(message.chat.id, enums.ChatAction.PLAYING)
         await loading.edit_text(f"Loading{dots}")
 
     await asyncio.sleep(0.5)
