@@ -1,10 +1,11 @@
 """
 Force-Sub Module for Telegram Bot
 
-Credits: @VoidXTora
-Mythic_Bots
-MythicBot_Support
-
+#=====================================================================================##
+# Credits:- @VoidXTora
+# Maintained by: Mythic_Bots
+# Support: @MythicBot_Support
+#=====================================================================================##
 This file is part of MythicBots Project.
 Released Base Repo Codeflixbot.
 """
@@ -193,3 +194,16 @@ async def list_force_sub_channels(client, message):
         disable_web_page_preview=True,
         reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Close ✖️", callback_data="close")]])
     )
+
+
+"""
+Force-Sub Module for Telegram Bot
+
+#=====================================================================================##
+# Credits:- @VoidXTora
+# Maintained by: Mythic_Bots
+# Support: @MythicBot_Support
+#=====================================================================================##
+This file is part of MythicBots Project.
+Released Base Repo Codeflixbot.
+"""
