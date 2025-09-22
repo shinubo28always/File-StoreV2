@@ -1,22 +1,47 @@
+# admin.py
 import asyncio
 import os
 import random
 import sys
 import time
+
 from pyrogram import Client, filters, __version__
 from pyrogram.enums import ParseMode, ChatAction, ChatMemberStatus, ChatType
-from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, ReplyKeyboardMarkup, ChatMemberUpdated, ChatPermissions
-from pyrogram.errors.exceptions.bad_request_400 import UserNotParticipant, InviteHashEmpty, ChatAdminRequired, PeerIdInvalid, UserIsBlocked, InputUserDeactivated
+from pyrogram.types import (
+    Message,
+    InlineKeyboardMarkup,
+    InlineKeyboardButton,
+    CallbackQuery,
+    ReplyKeyboardMarkup,
+    ChatMemberUpdated,
+    ChatPermissions,
+)
+from pyrogram.errors.exceptions.bad_request_400 import (
+    UserNotParticipant,
+    InviteHashEmpty,
+    ChatAdminRequired,
+    PeerIdInvalid,
+    UserIsBlocked,
+    InputUserDeactivated,
+)
+
+
+from config import *                      # OWNER_ID, USER_REPLY_TEXT, etc.
 from bot import Bot
 from config import *
 from helper_func import *
 from database.database import *
+from VoidXTora import check_owner_only, check_admin_or_owner
 
 
-
-# Commands for adding admins by owner
-@Bot.on_message(filters.command('add_admin') & filters.private & filters.user(OWNER_ID))
+# ---------------------------
+# Add admins (Owner only)
+# ---------------------------
+@Bot.on_message(filters.command('add_admin') & filters.private)
 async def add_admins(client: Client, message: Message):
+    if not await check_owner_only(message):  # ❌ Non-owner blocked
+        return
+
     pro = await message.reply("<b><i>ᴘʟᴇᴀsᴇ ᴡᴀɪᴛ..</i></b>", quote=True)
     check = 0
     admin_ids = await db.get_all_admins()
@@ -35,27 +60,27 @@ async def add_admins(client: Client, message: Message):
         )
 
     admin_list = ""
-    for id in admins:
+    for uid in admins:
         try:
-            id = int(id)
+            uid_int = int(uid)
         except:
-            admin_list += f"<blockquote><b>Invalid ID: <code>{id}</code></b></blockquote>\n"
+            admin_list += f"<blockquote><b>Invalid ID: <code>{uid}</code></b></blockquote>\n"
             continue
 
-        if id in admin_ids:
-            admin_list += f"<blockquote><b>ID <code>{id}</code> already exists.</b></blockquote>\n"
+        if uid_int in admin_ids:
+            admin_list += f"<blockquote><b>ID <code>{uid_int}</code> already exists.</b></blockquote>\n"
             continue
 
-        id = str(id)
-        if id.isdigit() and len(id) == 10:
-            admin_list += f"<b><blockquote>(ID: <code>{id}</code>) added.</blockquote></b>\n"
+        uid_str = str(uid_int)
+        if uid_str.isdigit() and len(uid_str) == 10:
+            admin_list += f"<b><blockquote>(ID: <code>{uid_str}</code>) added.</blockquote></b>\n"
             check += 1
         else:
-            admin_list += f"<blockquote><b>Invalid ID: <code>{id}</code></b></blockquote>\n"
+            admin_list += f"<blockquote><b>Invalid ID: <code>{uid}</code></b></blockquote>\n"
 
     if check == len(admins):
-        for id in admins:
-            await db.add_admin(int(id))
+        for uid in admins:
+            await db.add_admin(int(uid))
         await pro.edit(f"<b>✅ Admin(s) added successfully:</b>\n\n{admin_list}", reply_markup=reply_markup)
     else:
         await pro.edit(
@@ -65,8 +90,14 @@ async def add_admins(client: Client, message: Message):
         )
 
 
-@Bot.on_message(filters.command('deladmin') & filters.private & filters.user(OWNER_ID))
+# ---------------------------
+# Delete admins (Owner only)
+# ---------------------------
+@Bot.on_message(filters.command('deladmin') & filters.private)
 async def delete_admins(client: Client, message: Message):
+    if not await check_owner_only(message):
+        return
+
     pro = await message.reply("<b><i>ᴘʟᴇᴀsᴇ ᴡᴀɪᴛ..</i></b>", quote=True)
     admin_ids = await db.get_all_admins()
     admins = message.text.split()[1:]
@@ -84,8 +115,8 @@ async def delete_admins(client: Client, message: Message):
 
     if len(admins) == 1 and admins[0].lower() == "all":
         if admin_ids:
-            for id in admin_ids:
-                await db.del_admin(id)
+            for a in admin_ids:
+                await db.del_admin(a)
             ids = "\n".join(f"<blockquote><code>{admin}</code> ✅</blockquote>" for admin in admin_ids)
             return await pro.edit(f"<b>⛔️ All admin IDs have been removed:</b>\n{ids}", reply_markup=reply_markup)
         else:
@@ -95,24 +126,30 @@ async def delete_admins(client: Client, message: Message):
         passed = ''
         for admin_id in admins:
             try:
-                id = int(admin_id)
+                aid = int(admin_id)
             except:
                 passed += f"<blockquote><b>Invalid ID: <code>{admin_id}</code></b></blockquote>\n"
                 continue
 
-            if id in admin_ids:
-                await db.del_admin(id)
-                passed += f"<blockquote><code>{id}</code> ✅ Removed</blockquote>\n"
+            if aid in admin_ids:
+                await db.del_admin(aid)
+                passed += f"<blockquote><code>{aid}</code> ✅ Removed</blockquote>\n"
             else:
-                passed += f"<blockquote><b>ID <code>{id}</code> not found in admin list.</b></blockquote>\n"
+                passed += f"<blockquote><b>ID <code>{aid}</code> not found in admin list.</b></blockquote>\n"
 
         await pro.edit(f"<b>⛔️ Admin removal result:</b>\n\n{passed}", reply_markup=reply_markup)
     else:
         await pro.edit("<b><blockquote>No admin IDs available to delete.</blockquote></b>", reply_markup=reply_markup)
 
 
-@Bot.on_message(filters.command('admins') & filters.private & admin)
+# ---------------------------
+# Get admin list (Owner + Admins)
+# ---------------------------
+@Bot.on_message(filters.command('admins') & filters.private)
 async def get_admins(client: Client, message: Message):
+    if not await check_admin_or_owner(message):  # ❌ Blocked if not admin/owner
+        return
+
     pro = await message.reply("<b><i>ᴘʟᴇᴀsᴇ ᴡᴀɪᴛ..</i></b>", quote=True)
     admin_ids = await db.get_all_admins()
 
