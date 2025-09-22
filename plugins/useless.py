@@ -31,7 +31,7 @@ from plugins.VoidXTora import check_owner_only, check_admin_or_owner
 
 @Bot.on_message(filters.command('stats'))
 async def stats(bot: Bot, message: Message):
-        if not await check_admin_or_owner(message):  # ❌ Blocked if not admin/owner
+    if not await check_admin_or_owner(message):  # ❌ Blocked if not admin/owner
         return
     now = datetime.now()
     delta = now - bot.uptime
