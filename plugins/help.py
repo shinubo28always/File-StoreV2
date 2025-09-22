@@ -45,5 +45,5 @@ async def help_command(client: Client, message: Message):
                 [InlineKeyboardButton("👨‍💻 Support", url="https://t.me/Anime_Talk_Mythic")],
             ]
         ),
-        parse_mode="html"
+        parse_mode=ParseMode.HTML
     )
