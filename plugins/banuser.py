@@ -23,8 +23,14 @@ from plugins.VoidXTora import check_owner_only, check_admin_or_owner
 #BAN-USER-SYSTEM
 @Bot.on_message(filters.private & filters.command("ban"))
 async def add_banuser(client: Client, message: Message):  
+    # ✅ Custom check for ban command
     if not await check_admin_or_owner(message):
+        await message.reply(
+            "ᴡʜᴏ ᴀʀᴇ ʏᴏᴜ ᴛᴏ ʙᴀɴ ᴀɴʏᴏɴᴇ? Kɴᴏᴡ ʏᴏᴜʀ ᴘʟᴀᴄᴇ ғɪʀsᴛ.",
+            quote=True
+        )
         return      
+
     pro = await message.reply("⏳ <i>Processing request...</i>", quote=True)
     banuser_ids = await db.get_ban_users()
     banusers = message.text.split()[1:]
