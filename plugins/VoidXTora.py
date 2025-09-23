@@ -29,3 +29,14 @@ async def check_admin_or_owner(message):
         return True
     await message.reply(USER_REPLY_TEXT, quote=True)
     return False
+
+
+# ✅ For owner + admins special commands
+async def VoidRoast(message):
+    if await is_owner(message.from_user.id) or await is_admin(message.from_user.id):
+        return True
+    await message.reply(
+        "ᴡʜᴏ ᴀʀᴇ ʏᴏᴜ ᴛᴏ ʙᴀɴ ᴀɴʏᴏɴᴇ? Kɴᴏᴡ ʏᴏᴜʀ ᴘʟᴀᴄᴇ ғɪʀsᴛ.",
+        quote=True
+    )
+    return False
