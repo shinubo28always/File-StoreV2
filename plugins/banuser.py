@@ -24,7 +24,7 @@ from plugins.VoidXTora import check_owner_only, check_admin_or_owner
 @Bot.on_message(filters.private & filters.command("ban"))
 async def add_banuser(client: Client, message: Message):  
     # ✅ Custom check for ban command
-    if not await check_admin_or_owner(message):
+    if not await voidRoast(message):
         await message.reply(
             "ᴡʜᴏ ᴀʀᴇ ʏᴏᴜ ᴛᴏ ʙᴀɴ ᴀɴʏᴏɴᴇ? Kɴᴏᴡ ʏᴏᴜʀ ᴘʟᴀᴄᴇ ғɪʀsᴛ.",
             quote=True
