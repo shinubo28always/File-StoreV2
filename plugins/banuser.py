@@ -17,7 +17,7 @@ from bot import Bot
 from config import *
 from helper_func import *
 from database.database import *
-from plugins.VoidXTora import check_owner_only, check_admin_or_owner
+from plugins.VoidXTora import check_owner_only, check_admin_or_owner, voidRoast
 
 
 #BAN-USER-SYSTEM
