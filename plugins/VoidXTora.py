@@ -32,7 +32,7 @@ async def check_admin_or_owner(message):
 
 
 # ✅ For owner + admins special commands
-async def VoidRoast(message):
+async def voidRoast(message):
     if await is_owner(message.from_user.id) or await is_admin(message.from_user.id):
         return True
     await message.reply(
