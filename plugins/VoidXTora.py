@@ -38,3 +38,12 @@ async def voidRoast(message):
     await message.reply(USER_ROAST_TEXT,
  quote=True)
     return False
+
+
+#=====================================================================================##
+# Credits:- @VoidXTora
+# Maintained by: Mythic_Bots
+# Support: @MythicBot_Support
+#=====================================================================================##
+This file is part of MythicBots Project.
+"""
