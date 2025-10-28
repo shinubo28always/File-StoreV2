@@ -1,6 +1,6 @@
 # VoidXTora.py
 
-from config import OWNER_ID, USER_REPLY_TEXT
+from config import OWNER_ID, USER_REPLY_TEXT, USER_ROAST_TEXT
 from database.database import db
 
 
@@ -35,8 +35,6 @@ async def check_admin_or_owner(message):
 async def voidRoast(message):
     if await is_owner(message.from_user.id) or await is_admin(message.from_user.id):
         return True
-    await message.reply(
-        "ᴡʜᴏ ᴀʀᴇ ʏᴏᴜ ᴛᴏ ʙᴀɴ ᴀɴʏᴏɴᴇ? Kɴᴏᴡ ʏᴏᴜʀ ᴘʟᴀᴄᴇ ғɪʀsᴛ.",
-        quote=True
-    )
+    await message.reply(USER_ROAST_TEXT,
+ quote=True)
     return False
