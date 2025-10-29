@@ -84,14 +84,12 @@ async def check_delete_time(client: Bot, message: Message):
 
 #=====================================================================================##
 
-"""
-Force-Sub Module for Telegram Bot
+##Force-Sub Module for Telegram Bot##
 
 #=====================================================================================##
 # Credits:- @VoidXTora
 # Maintained by: Mythic_Bots
 # Support: @MythicBot_Support
 #=====================================================================================##
-This file is part of MythicBots Project.
-Base Repo Codeflixbot.
-"""
+##This file is part of MythicBots Project.##
+##Base Repo Codeflixbot.##
