@@ -41,8 +41,8 @@ async def help_command(client: Client, message: Message):
         caption=HELP_TEXT.format(user_mention=user_mention),
         reply_markup=InlineKeyboardMarkup(
             [
-                [InlineKeyboardButton("👤 Owner", url="https://t.me/VoidXTora")],
-                [InlineKeyboardButton("👨‍💻 Support", url="https://t.me/Anime_Talk_Mythic")],
+                [InlineKeyboardButton("👤 Owner", url="https://t.me/AniReal_Support")],
+                [InlineKeyboardButton("👨‍💻 Support", url="https://t.me/AniReal_Chat_Group_Asia")],
             ]
         ),
         parse_mode=ParseMode.HTML
