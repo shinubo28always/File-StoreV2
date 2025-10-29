@@ -166,6 +166,5 @@ async def get_admins(client: Client, message: Message):
 # Maintained by: Mythic_Bots
 # Support: @MythicBot_Support
 #=====================================================================================##
-This file is part of MythicBots Project.
-Base Repo Codeflixbot.
-"""
+#This file is part of MythicBots Project.#
+#Base Repo Codeflixbot.#
