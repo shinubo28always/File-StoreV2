@@ -42,10 +42,15 @@ async def help_command(client: Client, message: Message):
         photo=HELP_IMAGE_URL,
         caption=HELP_TEXT.format(user_mention=user_mention),
         reply_markup=InlineKeyboardMarkup(
-            [
-                [InlineKeyboardButton("👤 Owner", url="https://t.me/AniReal_Support")],
-                [InlineKeyboardButton("👨‍💻 Support", url="https://t.me/AniReal_Chat_Group_Asia")],
-            ]
-        ),
+    [
+        [
+            InlineKeyboardButton("• ᴏᴡɴᴇʀ", url="https://t.me/AniReal_Support"),
+            InlineKeyboardButton("sᴜᴘᴘᴏʀᴛ •", url="https://t.me/AniReal_Chat_Group_Asia")
+        ],
+        [
+            InlineKeyboardButton("• Jᴏɪɴ ᴜᴘᴅᴀᴛᴇ ᴄʜᴀɴɴᴇʟ •", url="https://t.me/AniReal_Network")
+        ],
+    ]
+),
         parse_mode=ParseMode.HTML
     )
