@@ -41,7 +41,7 @@ async def help_command(client: Client, message: Message):
         chat_id=message.chat.id,
         photo=HELP_IMAGE_URL,
         caption=HELP_TEXT.format(user_mention=user_mention),
-        reply_markup=InlineKeyboardMarkup(
+reply_markup=InlineKeyboardMarkup(
     [
         [
             InlineKeyboardButton("• ᴏᴡɴᴇʀ", url="https://t.me/AniReal_Support"),
@@ -52,5 +52,5 @@ async def help_command(client: Client, message: Message):
         ],
     ]
 ),
-        parse_mode=ParseMode.HTML
+parse_mode=ParseMode.HTML
     )
